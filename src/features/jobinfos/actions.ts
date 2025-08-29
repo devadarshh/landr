@@ -29,7 +29,6 @@ export async function createJobInfo(values: JobInfoFormData) {
     return { error: true, message: "Failed to create job info" };
   }
 
-  // redirect is *never* inside try/catch
   redirect(`/job-info/${jobInfo.id}`);
 }
 
