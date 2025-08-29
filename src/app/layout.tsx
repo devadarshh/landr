@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@/services/clerk/components/ClerkProvider";
+import { Toaster } from "sonner";
 
 const outfitSans = Outfit({
   variable: "--font-outfit-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>
