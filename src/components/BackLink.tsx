@@ -10,17 +10,23 @@ export function BackLink({
   className,
 }: {
   href: string;
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
 }) {
   return (
-    <Button variant={"ghost"} size="sm" className={cn("-ml-3", className)}>
+    <Button
+      asChild
+      variant={"ghost"}
+      size="sm"
+      className={cn("-ml-3", className)}
+    >
       <Link
         href={href}
         className="flex gap-2 items-center text-sm text-muted-foreground"
-      />
-      <ArrowLeftIcon />
-      {children}
+      >
+        <ArrowLeftIcon />
+        {children}{" "}
+      </Link>
     </Button>
   );
 }
