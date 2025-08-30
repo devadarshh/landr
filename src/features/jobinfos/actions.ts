@@ -44,5 +44,5 @@ export async function updateJobInfo(id: string, values: JobInfoFormData) {
     return { error: true, message: "Failed to update job info" };
   }
 
-  redirect(`/job-info/${jobInfo.id}`);
+  redirect(`/app/job-infos/${jobInfo.id}`);
 }
