@@ -10,16 +10,17 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { Loader2Icon } from "lucide-react";
 import { Suspense } from "react";
-import { CondensedMessages } from "@/services/hume/components/CondensedMessages";
-import { condenseChatMessages } from "@/services/hume/lib/condenseChatMessages";
+
 import { fetchChatMessages } from "@/services/hume/lib/api";
 import { ActionButton } from "@/components/ui/action-button";
 import { generateInterviewFeedback } from "@/features/interviews/actions";
 import { formatDateTime } from "@/lib/formatters";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { CondensedMessages } from "@/services/hume/components/CondensedMessages";
+import { condenseChatMessages } from "@/services/hume/lib/condenseChatMessages";
 
 export default async function InterviewPage({
   params,
@@ -87,7 +88,7 @@ export default async function InterviewPage({
           />
         </div>
         <Suspense
-          fallback={<Loader2Icon classNam e="animate-spin size-24 mx-auto" />}
+          fallback={<Loader2Icon className="animate-spin size-24 mx-auto" />}
         >
           <Messages interview={interview} />
         </Suspense>

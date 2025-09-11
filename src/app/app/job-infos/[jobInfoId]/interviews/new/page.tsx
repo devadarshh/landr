@@ -2,10 +2,11 @@ import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { Loader2Icon } from "lucide-react";
 import { Suspense } from "react";
 import { getJobInfo } from "../../page";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { fetchAccessToken } from "hume";
 import { VoiceProvider } from "@humeai/voice-react";
 import { StartCall } from "./_StartCall";
+import { canCreateInterview } from "@/features/interviews/permissions";
 
 export default async function NewInterviewPage({
   params,
@@ -32,7 +33,7 @@ async function SuspendedComponent({ jobInfoId }: { jobInfoId: string }) {
   });
 
   if (userId == null || user == null) return redirectToSignIn();
-  //   if (!(await canCreateInterview())) return redirect("/app/upgrade");
+  if (!(await canCreateInterview())) return redirect("/app/upgrade");
 
   const jobInfo = await getJobInfo(jobInfoId, userId);
   if (jobInfo == null) return notFound();

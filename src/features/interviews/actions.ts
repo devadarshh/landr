@@ -1,17 +1,17 @@
 "use server";
 
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
-import { canCreateInterview } from "./permissions";
 import { PLAN_LIMIT_MESSAGE, RATE_LIMIT_MESSAGE } from "@/lib/errorToast";
 import arcjet, { tokenBucket, request } from "@arcjet/next";
 import { generateAiInterviewFeedback } from "@/services/ai/interviews";
 import { PrismaClient } from "@prisma/client";
+import { canCreateInterview } from "./permissions";
 
 const prisma = new PrismaClient();
 
 const aj = arcjet({
   characteristics: ["userId"],
-  key: env.ARCJET_KEY,
+  key: process.env.ARCJET_KEY!,
   rules: [
     tokenBucket({
       capacity: 12,
