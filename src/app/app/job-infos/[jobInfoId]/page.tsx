@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatExperienceLevel } from "@/features/jobinfos/components/lib/formatters";
+import { formatExperienceLevel } from "@/features/jobinfos/lib/formatters";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";

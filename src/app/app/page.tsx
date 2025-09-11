@@ -13,7 +13,7 @@ import { ArrowRightIcon, Loader2Icon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
-import { formatExperienceLevel } from "@/features/jobinfos/components/lib/formatters";
+import { formatExperienceLevel } from "@/features/jobinfos/lib/formatters";
 import { JobInfoForm } from "@/features/jobinfos/components/JobInfoForm";
 export default function AppPage() {
   return (
