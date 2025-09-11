@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.13",
+    "@ai-sdk/react": "^2.0.39",
     "@arcjet/inspect": "^1.0.0-beta.10",
     "@arcjet/next": "^1.0.0-beta.10",
     "@clerk/nextjs": "^6.31.6",
