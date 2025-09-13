@@ -52,7 +52,6 @@ export function StartCall({
     return () => clearInterval(intervalId);
   }, [interviewId]);
 
-  // Handle disconnect
   useEffect(() => {
     if (readyState !== VoiceReadyState.CLOSED) return;
     if (!interviewId) {
