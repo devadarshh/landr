@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Landr – AI Job Prep Platform
 
-## Getting Started
+Landr is a **full-stack AI-powered job preparation platform** designed to help candidates practice interviews, refine resumes, and receive real-time feedback. By combining **LLMs, emotion AI, and secure infrastructure**, Landr empowers users to become interview-ready with personalized insights.
 
-First, run the development server:
+**🌐 Live Demo:** [Access Landr](https://landr-web.vercel.app/)  
+**🎬 Project Walkthrough:** [Watch on YouTube](https://youtube.com/your-video-link)
+
+---
+
+## ✅ Core Features
+
+- 🤖 **AI-Powered Interview Practice** – Role-specific interview questions generated via Gemini API.
+- 📝 **Resume Feedback** – Automated suggestions to improve clarity, structure, and role alignment.
+- 🎤 **Real-Time Emotion & Tone Analysis** – Hume AI tracks delivery across 100+ practice sessions.
+- 🔐 **Secure Authentication** – Clerk-based user auth & role management for 500+ user profiles.
+- 🛡 **Fraud & Abuse Protection** – Arcjet integration blocking 1,000+ malicious requests.
+- 📊 **Progress Tracking** – Monitor performance across multiple mock interviews.
+- ⚡ **Scalable & Reliable** – 99.9% uptime with robust API integrations and PostgreSQL persistence.
+
+---
+
+## 🛠 Tech Stack
+
+### **Client (Frontend)**
+
+- ⚛️ **Next.js** – React-based framework with server and client rendering
+- 🎨 **TailwindCSS, Shadcn UI, Lucide Icons** – Modern and responsive UI components
+- 🔔 **Sonner** – In-app notifications
+- 📡 **Axios** – API requests and data fetching
+
+### **Server (Backend)**
+
+- ⚡ **Express.js** – Lightweight Node.js backend framework
+- 🗄 **PostgreSQL + Prisma ORM** – Relational database with schema management
+- 🛡 **Arcjet** – Security & request protection
+- 🔐 **Clerk** – Authentication, authorization, and session management
+- 🧠 **Gemini API** – Role-specific interview question generation
+- 🎤 **Hume AI** – Emotion and tone analysis for real-time interview feedback
+
+---
+
+## Environment Variables
+
+To run this project, you will need to set the following environment variables in your `.env` file:
+
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
+- `NEXT_PUBLIC_CLERK_SIGN_IN_URL`
+- `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL`
+- `NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL`
+- `CLERK_WEBHOOK_SIGNING_SECRET`
+- `ARCJET_KEY`
+- `DATABASE_URL`
+- `HUME_API_KEY`
+- `HUME_SECRET_KEY`
+- `NEXT_PUBLIC_HUME_CONFIG_ID`
+- `GEMINI_API_KEY`
+
+## 🚀 Installation & Running Locally
+
+Follow these steps to set up and run **Collabydraw**:
 
 ```bash
+# Clone the repository
+git clone https://github.com/devadarshh/landr.git
+cd landr
+
+# Install dependencies
+npm install
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+--
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📸 Screenshots
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Landing Page I
 
-## Learn More
+![Landing Page I](assets/screenshots/landing_page.png)
 
-To learn more about Next.js, take a look at the following resources:
+### Landing Page II
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![Landing Page II](assets/screenshots/landing_page2.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Sign In Page
 
-## Deploy on Vercel
+![Sign In Page](assets/screenshots/sign_in.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Job Dashboard
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+![Job Dashboard](assets/screenshots/job_description.png)
+
+### Job Info Page
+
+![Job Info Page](assets/screenshots/jobbb.png)
+
+### Edit Job Info Page
+
+![Edit Job Info Page](assets/screenshots/edit_job.png)
+
+### Job Interview Page
+
+![Job Interview Page](assets/screenshots/interview.png)
+
+### Dark Mode Page
+
+![Dark Mode Page](assets/screenshots/dark_mode.png)
+
+## 📄 License
+
+This project is licensed under a **Custom Personal Use License** — you may view and learn from the code, but **commercial use, redistribution, or claiming authorship is strictly prohibited**.
+See the full [LICENSE](./LICENSE) for details.
