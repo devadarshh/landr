@@ -4,6 +4,7 @@ import { BackLink } from "@/components/BackLink";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { Button } from "@/components/ui/button";
 import { LoadingSwap } from "@/components/ui/loading-swap";
+import { ExperienceLevel } from "@prisma/client";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -18,7 +19,7 @@ import z from "zod";
 import { Prisma } from "@prisma/client";
 import { formatQuestionDifficulty } from "@/features/questions/formatters";
 
-export const questionDifficulties: Prisma.QuestionDifficultyEnum[] = [
+export const questionDifficulties: ExperienceLevel[] = [
   "junior",
   "mid_level",
   "senior",
@@ -38,13 +39,12 @@ export function NewQuestionClientPage({
 }) {
   const [status, setStatus] = useState<Status>("init");
   const [answer, setAnswer] = useState<string | null>(null);
-
+  const data: any = (useCompletion as any).data;
   const {
     complete: generateQuestion,
     completion: question,
     setCompletion: setQuestion,
     isLoading: isGeneratingQuestion,
-    data,
   } = useCompletion({
     api: "/api/ai/questions/generate-question",
     onFinish: () => {

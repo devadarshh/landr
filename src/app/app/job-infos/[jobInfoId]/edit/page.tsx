@@ -1,4 +1,3 @@
-import { BackLink } from "@/components/BackLink";
 import { Card, CardContent } from "@/components/ui/card";
 import { JobInfoBackLink } from "@/features/jobinfos/components/JobInfoBackLink";
 import { JobInfoForm } from "@/features/jobinfos/components/JobInfoForm";
@@ -8,12 +7,12 @@ import { Loader2 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-export default async function JobInfoNewPage({
+export default async function JobInfoEditPage({
   params,
 }: {
-  params: { jobInfoId: string };
+  params: Promise<{ jobInfoId: string }>;
 }) {
-  const { jobInfoId } = params;
+  const { jobInfoId } = await params;
 
   return (
     <div className="container my-4 max-w-5xl space-y-4">

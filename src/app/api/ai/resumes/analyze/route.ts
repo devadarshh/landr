@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"; // adjust path if prisma client is elsewhere
-import { canRunResumeAnalysis } from "@/features/resumeAnalyses/permissions";
+import { canRunResumeAnalysis } from "../../../../../features/resumeAnalysis/permissions";
 import { PLAN_LIMIT_MESSAGE } from "@/lib/errorToast";
 import { analyzeResumeForJob } from "@/services/ai/resumes/ai";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";

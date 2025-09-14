@@ -1,15 +1,13 @@
-import { prisma } from "@/lib/prisma"; // adjust import path if needed
-import { questionDifficulties } from "@/drizzle/schema"; // assuming you still reuse the enum from schema
-import { insertQuestion } from "@/features/questions/db";
+import { prisma } from "@/lib/prisma";
 import { canCreateQuestion } from "@/features/questions/permissions";
 import { PLAN_LIMIT_MESSAGE } from "@/lib/errorToast";
-import { generateAiQuestion } from "@/services/ai/questions";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
-import { createDataStreamResponse } from "ai";
+import { streamText } from "ai";
+import type { ReadableStreamDefaultController } from "node:stream/web";
 import z from "zod";
 
 const schema = z.object({
-  prompt: z.enum(questionDifficulties),
+  prompt: z.enum(["junior", "mid_level", "senior"]),
   jobInfoId: z.string().min(1),
 });
 
@@ -41,23 +39,60 @@ export async function POST(req: Request) {
 
   const previousQuestions = await getQuestions(jobInfoId);
 
-  return createDataStreamResponse({
-    execute: async (dataStream) => {
-      const res = generateAiQuestion({
-        previousQuestions,
-        jobInfo,
-        difficulty,
-        onFinish: async (question) => {
-          const { id } = await insertQuestion({
-            text: question,
-            jobInfoId,
-            difficulty,
-          });
+  const aiResult = streamText({
+    model: "openai/gpt-4", // or whichever model you use
+    prompt: `Generate a question for job info ${
+      jobInfo.name
+    } with difficulty ${difficulty}. Avoid repeating questions in: ${previousQuestions
+      .map((q) => q.content)
+      .join(" || ")}`,
+    onError: ({ error }) => {
+      console.error("AI stream error:", error);
+    },
+  });
 
-          dataStream.writeData({ questionId: id });
+  const textStream = aiResult.textStream;
+
+  // Create a ReadableStream that first waits for the AI text, then when it's done, inserts questionId
+  const finalStream = new ReadableStream<Uint8Array>({
+    async start(controller: ReadableStreamDefaultController) {
+      const encoder = new TextEncoder();
+
+      // Collect the AI-generated text (if you need to process or store it)
+      let generatedText = "";
+
+      try {
+        for await (const chunk of textStream) {
+          generatedText += chunk;
+          controller.enqueue(encoder.encode(chunk));
+        }
+      } catch (err) {
+        console.error("Error reading AI stream:", err);
+        controller.error(err);
+        return;
+      }
+
+      // Once the AI text is fully generated:
+      // Save to DB
+      const question = await prisma.question.create({
+        data: {
+          content: generatedText,
+          jobInfoId,
         },
       });
-      res.mergeIntoDataStream(dataStream, { sendUsage: false });
+
+      // Then send structured data about the questionId (you could send this as text or JSON)
+      const idPayload = JSON.stringify({ questionId: question.id });
+      controller.enqueue(encoder.encode(idPayload));
+
+      controller.close();
+    },
+  });
+
+  return new Response(finalStream, {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-cache",
     },
   });
 }

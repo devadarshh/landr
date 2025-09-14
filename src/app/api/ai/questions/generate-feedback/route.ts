@@ -1,15 +1,13 @@
-import { prisma } from "@/lib/prisma"; // adjust the path to your prisma client import
+import { prisma } from "@/lib/prisma";
 import { canCreateQuestion } from "@/features/questions/permissions";
 import { PLAN_LIMIT_MESSAGE } from "@/lib/errorToast";
 import { generateAiQuestion } from "@/services/ai/questions";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
-import { createDataStreamResponse } from "ai";
+import { streamText, createTextStreamResponse } from "ai";
 import z from "zod";
 
-// You don’t have questionDifficulties enum from Prisma directly,
-// so hardcode it to match your schema validation
 const schema = z.object({
-  prompt: z.enum(["easy", "medium", "hard"]), // adjust if you want Prisma enum later
+  prompt: z.enum(["junior", "mid_level", "senior"]),
   jobInfoId: z.string().min(1),
 });
 
@@ -41,38 +39,46 @@ export async function POST(req: Request) {
 
   const previousQuestions = await getQuestions(jobInfoId);
 
-  return createDataStreamResponse({
-    execute: async (dataStream) => {
-      const res = generateAiQuestion({
-        previousQuestions,
-        jobInfo,
-        difficulty,
-        onFinish: async (question) => {
-          const created = await prisma.question.create({
-            data: {
-              content: question,
-              jobInfoId,
-              // if you want to store difficulty in DB, add a field in schema
-            },
-          });
+  // ✅ Build CoreMessage[] instead of a string
+  const messages = generateAiQuestion({
+    previousQuestions,
+    jobInfo,
+    difficulty,
+  });
 
-          dataStream.writeData({ questionId: created.id });
-        },
+  let fullText = "";
+
+  const aiResult = await streamText({
+    model: "openai/gpt-4o-mini", // or google("gemini-2.5-flash")
+    messages,
+  });
+
+  const textStream = new ReadableStream<string>({
+    async start(controller) {
+      for await (const chunk of aiResult.textStream) {
+        fullText += chunk;
+        controller.enqueue(chunk);
+      }
+
+      // Save to DB after AI finishes
+      const created = await prisma.question.create({
+        data: { content: fullText, jobInfoId },
       });
-      res.mergeIntoDataStream(dataStream, { sendUsage: false });
+
+      // Send metadata as last chunk
+      controller.enqueue(`\n[METADATA]{"questionId":"${created.id}"}`);
+      controller.close();
     },
   });
+
+  return createTextStreamResponse({ textStream });
 }
 
 async function getQuestions(jobInfoId: string) {
   return prisma.question.findMany({
     where: { jobInfoId },
     orderBy: { createdAt: "asc" },
-    select: {
-      content: true,
-      // If you have a `difficulty` field in DB, include it
-      // difficulty: true,
-    },
+    select: { content: true },
   });
 }
 
