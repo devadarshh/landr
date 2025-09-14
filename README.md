@@ -58,7 +58,7 @@ To run this project, you will need to set the following environment variables in
 
 ## 🚀 Installation & Running Locally
 
-Follow these steps to set up and run **Lanr**:
+Follow these steps to set up and run **Landr**:
 
 ```bash
 # Clone the repository
