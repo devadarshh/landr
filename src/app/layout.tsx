@@ -1,10 +1,7 @@
-"use client";
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from "@/services/clerk/components/ClerkProvider";
-import { Toaster } from "sonner";
+import { AppProviders } from "@/services/clerk/components/AppProvider";
 
 const outfitSans = Outfit({
   variable: "--font-outfit-sans",
@@ -18,27 +15,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${outfitSans.variable} antialiased font-sans`}
-          suppressHydrationWarning
-        >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableColorScheme
-            disableTransitionOnChange
-          >
-            {children}
-            <Toaster />
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={`${outfitSans.variable} antialiased font-sans`}>
+        {/* Wrap client-only logic inside a client component */}
+        <AppProviders>{children}</AppProviders>
+      </body>
+    </html>
   );
 }
