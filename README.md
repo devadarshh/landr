@@ -72,8 +72,6 @@ npm run dev
 
 ```
 
---
-
 ## 📸 Screenshots
 
 ### Landing Page I
