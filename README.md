@@ -60,17 +60,20 @@ To run this project, you will need to set the following environment variables in
 
 Follow these steps to set up and run **Landr**:
 
-# Clone the repository
-
+```bash
+# 1. Clone the repository
 git clone https://github.com/devadarshh/landr.git
+
+# 2. Navigate into the project directory
 cd landr
 
-# Install dependencies
-
+# 3. Install dependencies
 npm install
 
-# Start the development server
+# 4. Set up environment variables
+# Create a .env.local file in the root directory and add the values listed above.
 
+# 5. Start the development server
 npm run dev
 
 ```
@@ -113,4 +116,3 @@ npm run dev
 
 This project is licensed under a **Custom Personal Use License** — you may view and learn from the code, but **commercial use, redistribution, or claiming authorship is strictly prohibited**.
 See the full [LICENSE](./LICENSE) for details.
-```
