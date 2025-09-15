@@ -21,7 +21,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${outfitSans.variable} antialiased font-sans`}>
-        {/* Wrap client-only logic inside a client component */}
         <AppProviders>{children}</AppProviders>
       </body>
     </html>
