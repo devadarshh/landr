@@ -1,9 +1,10 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { experienceLevels, JobInfoTable } from "@/drizzle/schema/jobInfo"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -12,30 +13,31 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
+import { jobInfoSchema } from "../schemas"
+import { formatExperienceLevel } from "../lib/formatters"
+import { LoadingSwap } from "@/components/ui/loading-swap"
+import { createJobInfo, updateJobInfo } from "../actions"
+import { toast } from "sonner"
 
-import { LoadingSwap } from "@/components/ui/loading-swap";
-import { createJobInfo, updateJobInfo } from "../actions";
-import { toast } from "sonner";
-import { ExperienceLevel, JobInfo } from "@prisma/client";
-import { JobInfoFormData, jobInfoSchema } from "../JobInfoSchema";
+type JobInfoFormData = z.infer<typeof jobInfoSchema>
 
 export function JobInfoForm({
   jobInfo,
 }: {
   jobInfo?: Pick<
-    JobInfo,
+    typeof JobInfoTable.$inferSelect,
     "id" | "name" | "title" | "description" | "experienceLevel"
-  >;
+  >
 }) {
   const form = useForm<JobInfoFormData>({
     resolver: zodResolver(jobInfoSchema),
@@ -43,18 +45,18 @@ export function JobInfoForm({
       name: "",
       title: null,
       description: "",
-      experienceLevel: ExperienceLevel.junior,
+      experienceLevel: "junior",
     },
-  });
+  })
 
   async function onSubmit(values: JobInfoFormData) {
     const action = jobInfo
       ? updateJobInfo.bind(null, jobInfo.id)
-      : createJobInfo;
-    const res = await action(values);
+      : createJobInfo
+    const res = await action(values)
 
     if (res.error) {
-      toast.error(res.message);
+      toast.error(res.message)
     }
   }
 
@@ -89,11 +91,12 @@ export function JobInfoForm({
                   <Input
                     {...field}
                     value={field.value ?? ""}
-                    onChange={(e) => field.onChange(e.target.value || null)}
+                    onChange={e => field.onChange(e.target.value || null)}
                   />
                 </FormControl>
                 <FormDescription>
-                  Optional. Only enter if there is a specific job title.
+                  Optional. Only enter if there is a specific job title you are
+                  applying for.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -113,9 +116,9 @@ export function JobInfoForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.values(ExperienceLevel).map((level) => (
+                    {experienceLevels.map(level => (
                       <SelectItem key={level} value={level}>
-                        {level.replace("_", " ")}
+                        {formatExperienceLevel(level)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -133,8 +136,15 @@ export function JobInfoForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="Describe the job..." {...field} />
+                <Textarea
+                  placeholder="A Next.js 15 and React 19 full stack web developer job that uses Drizzle ORM and Postgres for database management."
+                  {...field}
+                />
               </FormControl>
+              <FormDescription>
+                Be as specific as possible. The more information you provide,
+                the better the interviews will be.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -151,5 +161,5 @@ export function JobInfoForm({
         </Button>
       </form>
     </Form>
-  );
+  )
 }

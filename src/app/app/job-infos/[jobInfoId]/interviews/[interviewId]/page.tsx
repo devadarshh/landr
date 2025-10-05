@@ -1,43 +1,47 @@
-import { BackLink } from "@/components/BackLink";
-import { Skeleton, SkeletonButton } from "@/components/Skeleton";
-import { SuspendedItem } from "@/components/SuspendedItem";
-import { Button } from "@/components/ui/button";
-import { prisma } from "@/lib/prisma"; // ⬅️ use your global client
-import { notFound } from "next/navigation";
+import { BackLink } from "@/components/BackLink"
+import { Skeleton, SkeletonButton } from "@/components/Skeleton"
+import { SuspendedItem } from "@/components/SuspendedItem"
+import { Button } from "@/components/ui/button"
+import { db } from "@/drizzle/db"
+import { InterviewTable } from "@/drizzle/schema"
+import { getInterviewIdTag } from "@/features/interviews/dbCache"
+import { getJobInfoIdTag } from "@/features/jobInfos/dbCache"
+import { formatDateTime } from "@/lib/formatters"
+import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser"
+import { eq } from "drizzle-orm"
+import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { notFound } from "next/navigation"
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Loader2Icon } from "lucide-react";
-import { Suspense } from "react";
-
-import { fetchChatMessages } from "@/services/hume/lib/api";
-import { ActionButton } from "@/components/ui/action-button";
-import { generateInterviewFeedback } from "@/features/interviews/actions";
-import { formatDateTime } from "@/lib/formatters";
-import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
-import { CondensedMessages } from "@/services/hume/components/CondensedMessages";
-import { condenseChatMessages } from "@/services/hume/lib/condenseChatMessages";
+} from "@/components/ui/dialog"
+import { MarkdownRenderer } from "@/components/MarkdownRenderer"
+import { Loader2Icon } from "lucide-react"
+import { Suspense } from "react"
+import { CondensedMessages } from "@/services/hume/components/CondensedMessages"
+import { condenseChatMessages } from "@/services/hume/lib/condenseChatMessages"
+import { fetchChatMessages } from "@/services/hume/lib/api"
+import { ActionButton } from "@/components/ui/action-button"
+import { generateInterviewFeedback } from "@/features/interviews/actions"
 
 export default async function InterviewPage({
   params,
 }: {
-  params: Promise<{ jobInfoId: string; interviewId: string }>;
+  params: Promise<{ jobInfoId: string; interviewId: string }>
 }) {
-  const { jobInfoId, interviewId } = await params;
+  const { jobInfoId, interviewId } = await params
 
   const interview = getCurrentUser().then(
     async ({ userId, redirectToSignIn }) => {
-      if (userId == null) return redirectToSignIn();
+      if (userId == null) return redirectToSignIn()
 
-      const interview = await getInterview(interviewId, userId);
-      if (interview == null) return notFound();
-      return interview;
+      const interview = await getInterview(interviewId, userId)
+      if (interview == null) return notFound()
+      return interview
     }
-  );
+  )
 
   return (
     <div className="container my-4 space-y-4">
@@ -52,21 +56,21 @@ export default async function InterviewPage({
               <SuspendedItem
                 item={interview}
                 fallback={<Skeleton className="w-48" />}
-                result={(i) => formatDateTime(i.createdAt)}
+                result={i => formatDateTime(i.createdAt)}
               />
             </h1>
             <p className="text-muted-foreground">
               <SuspendedItem
                 item={interview}
                 fallback={<Skeleton className="w-24" />}
-                result={(i) => i.duration}
+                result={i => i.duration}
               />
             </p>
           </div>
           <SuspendedItem
             item={interview}
             fallback={<SkeletonButton className="w-32" />}
-            result={(i) =>
+            result={i =>
               i.feedback == null ? (
                 <ActionButton
                   action={generateInterviewFeedback.bind(null, i.id)}
@@ -94,22 +98,22 @@ export default async function InterviewPage({
         </Suspense>
       </div>
     </div>
-  );
+  )
 }
 
 async function Messages({
   interview,
 }: {
-  interview: Promise<{ humeChatId: string | null }>;
+  interview: Promise<{ humeChatId: string | null }>
 }) {
-  const { user, redirectToSignIn } = await getCurrentUser({ allData: true });
-  if (user == null) return redirectToSignIn();
-  const { humeChatId } = await interview;
-  if (humeChatId == null) return notFound();
+  const { user, redirectToSignIn } = await getCurrentUser({ allData: true })
+  if (user == null) return redirectToSignIn()
+  const { humeChatId } = await interview
+  if (humeChatId == null) return notFound()
 
   const condensedMessages = condenseChatMessages(
     await fetchChatMessages(humeChatId)
-  );
+  )
 
   return (
     <CondensedMessages
@@ -117,21 +121,29 @@ async function Messages({
       user={user}
       className="max-w-5xl mx-auto"
     />
-  );
+  )
 }
 
 async function getInterview(id: string, userId: string) {
-  const interview = await prisma.interview.findFirst({
-    where: { id },
-    include: {
+  "use cache"
+  cacheTag(getInterviewIdTag(id))
+
+  const interview = await db.query.InterviewTable.findFirst({
+    where: eq(InterviewTable.id, id),
+    with: {
       jobInfo: {
-        select: { id: true, userId: true },
+        columns: {
+          id: true,
+          userId: true,
+        },
       },
     },
-  });
+  })
 
-  if (!interview) return null;
-  if (interview.jobInfo.userId !== userId) return null;
+  if (interview == null) return null
 
-  return interview;
+  cacheTag(getJobInfoIdTag(interview.jobInfo.id))
+  if (interview.jobInfo.userId !== userId) return null
+
+  return interview
 }

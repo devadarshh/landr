@@ -1,16 +1,16 @@
-import { ExperienceLevel } from "@prisma/client";
+import { QuestionDifficulty } from "@/drizzle/schema"
 
-export function formatQuestionDifficulty(difficulty: ExperienceLevel) {
+export function formatQuestionDifficulty(difficulty: QuestionDifficulty) {
   switch (difficulty) {
-    case "junior":
-      return "Junior";
-    case "mid_level":
-      return "Mid Level";
-    case "senior":
-      return "Senior";
+    case "easy":
+      return "Easy"
+    case "medium":
+      return "Medium"
+    case "hard":
+      return "Hard"
     default:
       throw new Error(
         `Unknown question difficulty: ${difficulty satisfies never}`
-      );
+      )
   }
 }

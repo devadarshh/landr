@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
-import { ComponentProps } from "react";
-import Markdown from "react-markdown";
+import { cn } from "@/lib/utils"
+import { ComponentProps } from "react"
+import Markdown from "react-markdown"
 
 export function MarkdownRenderer({
   className,
@@ -15,5 +15,5 @@ export function MarkdownRenderer({
     >
       <Markdown {...props} />
     </div>
-  );
+  )
 }

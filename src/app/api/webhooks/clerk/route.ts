@@ -1,55 +1,61 @@
-import { NextRequest } from "next/server";
+import { deleteUser, upsertUser } from "@/features/users/db";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
-import { prisma } from "@/lib/prisma";
+import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("Clerk webhook received");
     const event = await verifyWebhook(request);
-    if (event.type === "user.created" || event.type === "user.updated") {
-      const clerkData = event.data;
-      const email = clerkData.email_addresses.find(
-        (e) => e.id === clerkData.primary_email_address_id
-      )?.email_address;
-      if (!email) {
-        return new Response("No primary email found", { status: 400 });
-      }
+    console.log("Webhook verified, event type:", event.type);
 
-      await prisma.user.upsert({
-        where: { id: clerkData.id },
-        update: {
-          email,
-          name: `${clerkData.first_name ?? ""} ${
-            clerkData.last_name ?? ""
-          }`.trim(),
-          imageUrl: clerkData.image_url,
-        },
-        create: {
+    switch (event.type) {
+      case "user.created":
+      case "user.updated":
+        const clerkData = event.data;
+        console.log("Processing user event for ID:", clerkData.id);
+
+        const email = clerkData.email_addresses.find(
+          (e) => e.id === clerkData.primary_email_address_id
+        )?.email_address;
+        if (email == null) {
+          console.error("No primary email found for user:", clerkData.id);
+          return new Response("No primary email found", { status: 400 });
+        }
+
+        const userData = {
           id: clerkData.id,
           email,
-          name: `${clerkData.first_name ?? ""} ${
-            clerkData.last_name ?? ""
+          name: `${clerkData.first_name || ""} ${
+            clerkData.last_name || ""
           }`.trim(),
           imageUrl: clerkData.image_url,
-        },
-      });
-    } else if (event.type == "user.deleted") {
-      const clerkData = event.data;
-      const userId = clerkData.id;
-      if (!userId) {
-        return new Response("No user id found", { status: 400 });
-      }
-      await prisma.user.delete({
-        where: {
-          id: userId,
-        },
-      });
-    } else {
-      return new Response("Event ignored", { status: 200 });
+          createdAt: new Date(clerkData.created_at),
+          updatedAt: new Date(clerkData.updated_at),
+        };
+
+        console.log("Upserting user:", userData.id, userData.email);
+        await upsertUser(userData);
+        console.log("User upserted successfully");
+
+        break;
+      case "user.deleted":
+        if (event.data.id == null) {
+          console.error("No user ID found for deletion");
+          return new Response("No user ID found", { status: 400 });
+        }
+
+        console.log("Deleting user:", event.data.id);
+        await deleteUser(event.data.id);
+        console.log("User deleted successfully");
+        break;
+      default:
+        console.log("Unhandled event type:", event.type);
     }
+
+    console.log("Webhook processed successfully");
+    return new Response("Webhook received", { status: 200 });
   } catch (error) {
     console.error("Webhook error:", error);
     return new Response("Invalid webhook", { status: 400 });
   }
-
-  return new Response("Webhook received", { status: 200 });
 }

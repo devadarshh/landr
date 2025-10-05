@@ -1,59 +1,52 @@
-"use client";
+"use client"
 
-import { BackLink } from "@/components/BackLink";
-import { MarkdownRenderer } from "@/components/MarkdownRenderer";
-import { Button } from "@/components/ui/button";
-import { LoadingSwap } from "@/components/ui/loading-swap";
-import { ExperienceLevel } from "@prisma/client";
+import { BackLink } from "@/components/BackLink"
+import { MarkdownRenderer } from "@/components/MarkdownRenderer"
+import { Button } from "@/components/ui/button"
+import { LoadingSwap } from "@/components/ui/loading-swap"
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Textarea } from "@/components/ui/textarea";
-import { useMemo, useState } from "react";
-import { useCompletion } from "@ai-sdk/react";
-import { errorToast } from "@/lib/errorToast";
-import z from "zod";
-import { Prisma } from "@prisma/client";
-import { formatQuestionDifficulty } from "@/features/questions/formatters";
+} from "@/components/ui/resizable"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  JobInfoTable,
+  questionDifficulties,
+  QuestionDifficulty,
+} from "@/drizzle/schema"
+import { formatQuestionDifficulty } from "@/features/questions/formatters"
+import { useMemo, useState } from "react"
+import { useCompletion } from "@ai-sdk/react"
+import { errorToast } from "@/lib/errorToast"
+import z from "zod"
 
-export const questionDifficulties: ExperienceLevel[] = [
-  "junior",
-  "mid_level",
-  "senior",
-];
-
-export type QuestionDifficulty = (typeof questionDifficulties)[number];
-
-type Status = "awaiting-answer" | "awaiting-difficulty" | "init";
+type Status = "awaiting-answer" | "awaiting-difficulty" | "init"
 
 export function NewQuestionClientPage({
   jobInfo,
 }: {
-  jobInfo: Pick<
-    Prisma.JobInfoGetPayload<{ select: { id: true; name: true; title: true } }>,
-    "id" | "name" | "title"
-  >;
+  jobInfo: Pick<typeof JobInfoTable.$inferSelect, "id" | "name" | "title">
 }) {
-  const [status, setStatus] = useState<Status>("init");
-  const [answer, setAnswer] = useState<string | null>(null);
-  const data: any = (useCompletion as any).data;
+  const [status, setStatus] = useState<Status>("init")
+  const [answer, setAnswer] = useState<string | null>(null)
+
   const {
     complete: generateQuestion,
     completion: question,
     setCompletion: setQuestion,
     isLoading: isGeneratingQuestion,
+    data,
   } = useCompletion({
     api: "/api/ai/questions/generate-question",
     onFinish: () => {
-      setStatus("awaiting-answer");
+      setStatus("awaiting-answer")
     },
-    onError: (error) => {
-      errorToast(error.message);
+    onError: error => {
+      errorToast(error.message)
     },
-  });
+  })
 
   const {
     complete: generateFeedback,
@@ -63,21 +56,21 @@ export function NewQuestionClientPage({
   } = useCompletion({
     api: "/api/ai/questions/generate-feedback",
     onFinish: () => {
-      setStatus("awaiting-difficulty");
+      setStatus("awaiting-difficulty")
     },
-    onError: (error) => {
-      errorToast(error.message);
+    onError: error => {
+      errorToast(error.message)
     },
-  });
+  })
 
   const questionId = useMemo(() => {
-    const item = data?.at(-1);
-    if (item == null) return null;
-    const parsed = z.object({ questionId: z.string() }).safeParse(item);
-    if (!parsed.success) return null;
+    const item = data?.at(-1)
+    if (item == null) return null
+    const parsed = z.object({ questionId: z.string() }).safeParse(item)
+    if (!parsed.success) return null
 
-    return parsed.data.questionId;
-  }, [data]);
+    return parsed.data.questionId
+  }, [data])
 
   return (
     <div className="flex flex-col items-center gap-4 w-full mx-w-[2000px] mx-auto flex-grow h-screen-header">
@@ -89,10 +82,10 @@ export function NewQuestionClientPage({
         </div>
         <Controls
           reset={() => {
-            setStatus("init");
-            setQuestion("");
-            setFeedback("");
-            setAnswer(null);
+            setStatus("init")
+            setQuestion("")
+            setFeedback("")
+            setAnswer(null)
           }}
           disableAnswerButton={
             answer == null || answer.trim() === "" || questionId == null
@@ -101,15 +94,15 @@ export function NewQuestionClientPage({
           isLoading={isGeneratingFeedback || isGeneratingQuestion}
           generateFeedback={() => {
             if (answer == null || answer.trim() === "" || questionId == null)
-              return;
+              return
 
-            generateFeedback(answer?.trim(), { body: { questionId } });
+            generateFeedback(answer?.trim(), { body: { questionId } })
           }}
-          generateQuestion={(difficulty) => {
-            setQuestion("");
-            setFeedback("");
-            setAnswer(null);
-            generateQuestion(difficulty, { body: { jobInfoId: jobInfo.id } });
+          generateQuestion={difficulty => {
+            setQuestion("")
+            setFeedback("")
+            setAnswer(null)
+            generateQuestion(difficulty, { body: { jobInfoId: jobInfo.id } })
           }}
         />
         <div className="flex-grow hidden md:block" />
@@ -122,7 +115,7 @@ export function NewQuestionClientPage({
         setAnswer={setAnswer}
       />
     </div>
-  );
+  )
 }
 
 function QuestionContainer({
@@ -132,11 +125,11 @@ function QuestionContainer({
   status,
   setAnswer,
 }: {
-  question: string | null;
-  feedback: string | null;
-  answer: string | null;
-  status: Status;
-  setAnswer: (value: string) => void;
+  question: string | null
+  feedback: string | null
+  answer: string | null
+  status: Status
+  setAnswer: (value: string) => void
 }) {
   return (
     <ResizablePanelGroup direction="horizontal" className="flex-grow border-t">
@@ -176,7 +169,7 @@ function QuestionContainer({
         <ScrollArea className="h-full min-w-48 *:h-full">
           <Textarea
             disabled={status !== "awaiting-answer"}
-            onChange={(e) => setAnswer(e.target.value)}
+            onChange={e => setAnswer(e.target.value)}
             value={answer ?? ""}
             placeholder="Type your answer here..."
             className="w-full h-full resize-none border-none rounded-none focus-visible:ring focus-visible:ring-inset !text-base p-6"
@@ -184,7 +177,7 @@ function QuestionContainer({
         </ScrollArea>
       </ResizablePanel>
     </ResizablePanelGroup>
-  );
+  )
 }
 
 function Controls({
@@ -195,12 +188,12 @@ function Controls({
   generateFeedback,
   reset,
 }: {
-  disableAnswerButton: boolean;
-  status: Status;
-  isLoading: boolean;
-  generateQuestion: (difficulty: QuestionDifficulty) => void;
-  generateFeedback: () => void;
-  reset: () => void;
+  disableAnswerButton: boolean
+  status: Status
+  isLoading: boolean
+  generateQuestion: (difficulty: QuestionDifficulty) => void
+  generateFeedback: () => void
+  reset: () => void
 }) {
   return (
     <div className="flex gap-2">
@@ -223,7 +216,7 @@ function Controls({
           </Button>
         </>
       ) : (
-        questionDifficulties.map((difficulty) => (
+        questionDifficulties.map(difficulty => (
           <Button
             key={difficulty}
             size="sm"
@@ -237,5 +230,5 @@ function Controls({
         ))
       )}
     </div>
-  );
+  )
 }

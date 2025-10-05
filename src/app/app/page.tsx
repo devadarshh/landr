@@ -1,20 +1,24 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
+import { db } from "@/drizzle/db"
+import { JobInfoTable } from "@/drizzle/schema"
+import { JobInfoForm } from "@/features/jobInfos/components/JobInfoForm"
+import { getJobInfoUserTag } from "@/features/jobInfos/dbCache"
+import { formatExperienceLevel } from "@/features/jobInfos/lib/formatters"
+import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser"
+import { desc, eq } from "drizzle-orm"
+import { ArrowRightIcon, Loader2Icon, PlusIcon } from "lucide-react"
+import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import Link from "next/link"
+import { Suspense } from "react"
 
-import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
-import { ArrowRightIcon, Loader2Icon, PlusIcon } from "lucide-react";
-import Link from "next/link";
-import { Suspense } from "react";
-import { prisma } from "@/lib/prisma";
-import { formatExperienceLevel } from "@/features/jobinfos/lib/formatters";
-import { JobInfoForm } from "@/features/jobinfos/components/JobInfoForm";
 export default function AppPage() {
   return (
     <Suspense
@@ -26,17 +30,17 @@ export default function AppPage() {
     >
       <JobInfos />
     </Suspense>
-  );
+  )
 }
 
 async function JobInfos() {
-  const { userId, redirectToSignIn } = await getCurrentUser();
-  if (userId == null) return redirectToSignIn();
+  const { userId, redirectToSignIn } = await getCurrentUser()
+  if (userId == null) return redirectToSignIn()
 
-  const jobInfos = await getJobInfos(userId);
+  const jobInfos = await getJobInfos(userId)
 
   if (jobInfos.length === 0) {
-    return <NoJobInfos />;
+    return <NoJobInfos />
   }
 
   return (
@@ -53,7 +57,7 @@ async function JobInfos() {
         </Button>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 has-hover:*:not-hover:opacity-70">
-        {jobInfos.map((jobInfo) => (
+        {jobInfos.map(jobInfo => (
           <Link
             className="hover:scale-[1.02] transition-[transform_opacity]"
             href={`/app/job-infos/${jobInfo.id}`}
@@ -94,7 +98,7 @@ async function JobInfos() {
         </Link>
       </div>
     </div>
-  );
+  )
 }
 
 function NoJobInfos() {
@@ -116,14 +120,15 @@ function NoJobInfos() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }
 
 async function getJobInfos(userId: string) {
-  return prisma.jobInfo.findMany({
-    where: { userId },
-    orderBy: {
-      updatedAt: "desc",
-    },
-  });
+  "use cache"
+  cacheTag(getJobInfoUserTag(userId))
+
+  return db.query.JobInfoTable.findMany({
+    where: eq(JobInfoTable.userId, userId),
+    orderBy: desc(JobInfoTable.updatedAt),
+  })
 }

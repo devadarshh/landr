@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 export function Skeleton({ className }: { className?: string }) {
   return (
@@ -8,9 +8,9 @@ export function Skeleton({ className }: { className?: string }) {
         className
       )}
     />
-  );
+  )
 }
 
 export function SkeletonButton({ className }: { className?: string }) {
-  return <Skeleton className={cn("h-9", className)} />;
+  return <Skeleton className={cn("h-9", className)} />
 }

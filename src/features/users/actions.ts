@@ -1,59 +1,59 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { currentUser } from "@clerk/nextjs/server";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getUserIdTag, revalidateUserCache } from "./dbCache";
+import { db } from "@/drizzle/db";
+import { UserTable } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export async function getUser(id: string) {
-  return prisma.user.findUnique({
-    where: { id },
+  "use cache";
+  cacheTag(getUserIdTag(id));
+
+  return db.query.UserTable.findFirst({
+    where: eq(UserTable.id, id),
   });
 }
 
-export async function ensureCurrentUser() {
-  const clerkUser = await currentUser();
-  if (!clerkUser) throw new Error("Not authenticated");
+export async function createUserManually() {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Not authenticated");
 
-  const email =
-    clerkUser.emailAddresses.find(
+  try {
+    // Get user data from Clerk
+    const clerkUser = await (await clerkClient()).users.getUser(userId);
+
+    const email = clerkUser.emailAddresses.find(
       (e) => e.id === clerkUser.primaryEmailAddressId
-    )?.emailAddress || clerkUser.emailAddresses[0]?.emailAddress;
+    )?.emailAddress;
 
-  if (!email) throw new Error("No email available for current user");
+    if (!email) throw new Error("No primary email found");
 
-  const name = `${clerkUser.firstName ?? ""} ${
-    clerkUser.lastName ?? ""
-  }`.trim();
-
-  // Check for existing by email first
-  const existingByEmail = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (existingByEmail) {
-    // Ensure Clerk id is attached to this user
-    return prisma.user.update({
-      where: { email },
-      data: {
-        id: clerkUser.id, // ⚠️ only works if id is NOT primary key
-        name,
-        imageUrl: clerkUser.imageUrl,
-      },
-    });
-  }
-
-  // If no conflict, upsert by id
-  return prisma.user.upsert({
-    where: { id: clerkUser.id },
-    update: {
-      email,
-      name,
-      imageUrl: clerkUser.imageUrl,
-    },
-    create: {
+    // Create user in our database
+    const userData = {
       id: clerkUser.id,
       email,
-      name,
+      name:
+        `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() ||
+        "User",
       imageUrl: clerkUser.imageUrl,
-    },
-  });
+      createdAt: new Date(clerkUser.createdAt),
+      updatedAt: new Date(clerkUser.updatedAt),
+    };
+
+    await db
+      .insert(UserTable)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: [UserTable.id],
+        set: userData,
+      });
+
+    revalidateUserCache(userId);
+    return userData;
+  } catch (error) {
+    console.error("Failed to create user manually:", error);
+    throw error;
+  }
 }

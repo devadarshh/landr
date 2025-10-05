@@ -1,4 +1,4 @@
-import z from "zod";
+import z from "zod"
 
 const categorySchema = z.object({
   score: z.number().min(0).max(10).describe("Score of the category from 1-10"),
@@ -12,7 +12,7 @@ const categorySchema = z.object({
       })
     )
     .describe("Specific feedback on positives and negatives"),
-});
+})
 
 export const aiAnalyzeSchema = z.object({
   overallScore: z
@@ -35,4 +35,4 @@ export const aiAnalyzeSchema = z.object({
   other: categorySchema.describe(
     "Any other relevant analysis not covered by the above categories"
   ),
-});
+})

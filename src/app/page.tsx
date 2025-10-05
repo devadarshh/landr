@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
-import { SignInButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser"
+import { SignInButton } from "@clerk/nextjs"
 import {
   BookOpenCheckIcon,
   Brain,
@@ -10,12 +10,12 @@ import {
   FileText,
   Search,
   SpeechIcon,
-} from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { Suspense } from "react";
-import { UserAvatar } from "@/features/users/components/UserAvatar";
-import { PricingTable } from "@/services/clerk/components/PricingTable";
+} from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
+import { Suspense } from "react"
+import { UserAvatar } from "@/features/users/components/UserAvatar"
+import { PricingTable } from "@/services/clerk/components/PricingTable"
 
 export default function LandingPage() {
   return (
@@ -29,7 +29,7 @@ export default function LandingPage() {
       <Pricing />
       <Footer />
     </div>
-  );
+  )
 }
 
 function Navbar() {
@@ -53,25 +53,25 @@ function Navbar() {
         </div>
       </div>
     </nav>
-  );
+  )
 }
 
 async function NavButton() {
-  const { userId } = await getCurrentUser();
+  const { userId } = await getCurrentUser()
 
   if (userId == null) {
     return (
       <SignInButton forceRedirectUrl="/app">
         <Button variant="outline">Sign In</Button>
       </SignInButton>
-    );
+    )
   }
 
   return (
     <Button asChild>
       <Link href="/app">Dashboard</Link>
     </Button>
-  );
+  )
 }
 
 function Hero() {
@@ -97,7 +97,7 @@ function Hero() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 function Features() {
@@ -120,12 +120,12 @@ function Features() {
       description:
         "Solve coding problems with guided hints and explanations. Perfect your approach to technical interviews.",
     },
-  ];
+  ]
   return (
     <section className="py-20">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {features.map((feature) => (
+          {features.map(feature => (
             <Card
               key={feature.title}
               className="transition-all duration-300 transform hover:-translate-y-1"
@@ -148,7 +148,7 @@ function Features() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 function DetailedFeatures() {
@@ -394,7 +394,7 @@ function DetailedFeatures() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 function Stats() {
@@ -423,7 +423,7 @@ function Stats() {
       description:
         "Better negotiation skills lead to significantly higher compensation",
     },
-  ];
+  ]
 
   return (
     <section className="py-20 bg-muted/30">
@@ -470,7 +470,7 @@ function Stats() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 function Testimonials() {
@@ -535,7 +535,7 @@ function Testimonials() {
         "The salary negotiation tips alone paid for the platform 10x over. I increased my offer by $25K just by following Landr&apos;s guidance. Absolutely worth it!",
       timeToOffer: "4 weeks",
     },
-  ];
+  ]
 
   return (
     <section className="py-20">
@@ -603,7 +603,7 @@ function Testimonials() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 function Pricing() {
@@ -632,7 +632,7 @@ function Pricing() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 function Footer() {
@@ -647,5 +647,5 @@ function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

@@ -1,19 +1,17 @@
-import { streamObject } from "ai";
-import { google } from "../models/google";
-import { aiAnalyzeSchema } from "./schemas";
-import { Prisma } from "@prisma/client";
+import { JobInfoTable } from "@/drizzle/schema"
+import { streamObject } from "ai"
+import { google } from "../models/google"
+import { aiAnalyzeSchema } from "./schemas"
 
 export async function analyzeResumeForJob({
   resumeFile,
   jobInfo,
 }: {
-  resumeFile: File;
+  resumeFile: File
   jobInfo: Pick<
-    Prisma.JobInfoGetPayload<{
-      select: { title: true; experienceLevel: true; description: true };
-    }>,
+    typeof JobInfoTable.$inferSelect,
     "title" | "experienceLevel" | "description"
-  >;
+  >
 }) {
   return streamObject({
     model: google("gemini-2.5-flash"),
@@ -78,5 +76,5 @@ Other Guidelines:
 - Refer to the candidate as "you" in your feedback. This feedback should be written as if you were speaking directly to the candidate.
 - Stop generating output as soon you have provided the full feedback.
 `,
-  });
+  })
 }

@@ -1,49 +1,76 @@
-"use server";
+"use server"
 
-import { prisma } from "@/lib/prisma";
-import { JobInfoFormData } from "./JobInfoSchema";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import z from "zod"
+import { jobInfoSchema } from "./schemas"
+import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser"
+import { insertJobInfo, updateJobInfo as updateJobInfoDb } from "./db"
+import { redirect } from "next/navigation"
+import { db } from "@/drizzle/db"
+import { and, eq } from "drizzle-orm"
+import { JobInfoTable } from "@/drizzle/schema"
+import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { getJobInfoIdTag } from "./dbCache"
 
-export async function createJobInfo(values: JobInfoFormData) {
-  const { userId } = await auth();
-  if (!userId) {
-    return { error: true, message: "Unauthorized" };
+export async function createJobInfo(unsafeData: z.infer<typeof jobInfoSchema>) {
+  const { userId } = await getCurrentUser()
+  if (userId == null) {
+    return {
+      error: true,
+      message: "You don't have permission to do this",
+    }
   }
 
-  let jobInfo;
-  try {
-    jobInfo = await prisma.jobInfo.create({
-      data: {
-        name: values.name,
-        description: values.description,
-        experienceLevel: values.experienceLevel,
-        title: values.title,
-        user: {
-          connect: { id: userId },
-        },
-      },
-    });
-  } catch (err) {
-    console.error(err);
-    return { error: true, message: "Failed to create job info" };
+  const { success, data } = jobInfoSchema.safeParse(unsafeData)
+  if (!success) {
+    return {
+      error: true,
+      message: "Invalid job data",
+    }
   }
 
-  // Correct path inside the /app namespace
-  redirect(`/app/job-infos/${jobInfo.id}`);
+  const jobInfo = await insertJobInfo({ ...data, userId })
+
+  redirect(`/app/job-infos/${jobInfo.id}`)
 }
 
-export async function updateJobInfo(id: string, values: JobInfoFormData) {
-  let jobInfo;
-  try {
-    jobInfo = await prisma.jobInfo.update({
-      where: { id },
-      data: values,
-    });
-  } catch (err) {
-    console.error(err);
-    return { error: true, message: "Failed to update job info" };
+export async function updateJobInfo(
+  id: string,
+  unsafeData: z.infer<typeof jobInfoSchema>
+) {
+  const { userId } = await getCurrentUser()
+  if (userId == null) {
+    return {
+      error: true,
+      message: "You don't have permission to do this",
+    }
   }
 
-  redirect(`/app/job-infos/${jobInfo.id}`);
+  const { success, data } = jobInfoSchema.safeParse(unsafeData)
+  if (!success) {
+    return {
+      error: true,
+      message: "Invalid job data",
+    }
+  }
+
+  const existingJobInfo = await getJobInfo(id, userId)
+  if (existingJobInfo == null) {
+    return {
+      error: true,
+      message: "You don't have permission to do this",
+    }
+  }
+
+  const jobInfo = await updateJobInfoDb(id, data)
+
+  redirect(`/app/job-infos/${jobInfo.id}`)
+}
+
+async function getJobInfo(id: string, userId: string) {
+  "use cache"
+  cacheTag(getJobInfoIdTag(id))
+
+  return db.query.JobInfoTable.findFirst({
+    where: and(eq(JobInfoTable.id, id), eq(JobInfoTable.userId, userId)),
+  })
 }

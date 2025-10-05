@@ -1,7 +1,6 @@
-"use client";
-import { ReactNode } from "react";
-import { ClerkProvider as OriginalClerkProvider } from "@clerk/nextjs";
-import { buttonVariants } from "@/components/ui/button";
+import { ReactNode } from "react"
+import { ClerkProvider as OriginalClerkProvider } from "@clerk/nextjs"
+import { buttonVariants } from "@/components/ui/button"
 
 export function ClerkProvider({ children }: { children: ReactNode }) {
   return (
@@ -50,5 +49,5 @@ export function ClerkProvider({ children }: { children: ReactNode }) {
     >
       {children}
     </OriginalClerkProvider>
-  );
+  )
 }
