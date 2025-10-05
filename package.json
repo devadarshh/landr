@@ -2,6 +2,14 @@
   "name": "ai-powered-job-prep",
   "version": "0.1.0",
   "private": true,
+  "browser": {
+    "fs": false,
+    "path": false,
+    "net": false,
+    "dns": false,
+    "child_process": false,
+    "tls": false
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",

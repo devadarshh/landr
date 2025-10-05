@@ -1,22 +1,24 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     useCache: true,
   },
-  // Add webpack configuration for better module resolution
-  webpack: (config) => {
-    // Add fallbacks for node modules
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-      path: false,
-    };
-
-    // Ensure proper module resolution
-    config.resolve.extensions = [".ts", ".tsx", ".js", ".jsx", ".json"];
-
+  webpack: (config, { isServer }) => {
+    // If client-side, don't polyfill Node.js modules
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        dns: false,
+        child_process: false,
+        tls: false,
+        path: false,
+        stream: false,
+        constants: false,
+      };
+    }
     return config;
   },
 };
