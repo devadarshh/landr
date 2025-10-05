@@ -6,6 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id        String    @id
   name      String
@@ -13,16 +14,8 @@ model User {
   imageUrl  String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-
   jobInfos  JobInfo[]
 }
-
-enum ExperienceLevel {
-  junior
-  mid_level
-  senior
-}
-
 
 model JobInfo {
   id              String          @id @default(uuid())
@@ -33,10 +26,9 @@ model JobInfo {
   userId          String
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
-
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  questions   Question[]
-  interviews  Interview[]
+  interviews      Interview[]
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions       Question[]
 }
 
 model Interview {
@@ -47,15 +39,20 @@ model Interview {
   feedback   String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  jobInfo JobInfo @relation(fields: [jobInfoId], references: [id], onDelete: Cascade)
+  jobInfo    JobInfo  @relation(fields: [jobInfoId], references: [id], onDelete: Cascade)
 }
-model Question {
-  id         String   @id @default(uuid())
-  jobInfoId  String
-  content    String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 
-  jobInfo JobInfo @relation(fields: [jobInfoId], references: [id], onDelete: Cascade)
+model Question {
+  id        String   @id @default(uuid())
+  jobInfoId String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  jobInfo   JobInfo  @relation(fields: [jobInfoId], references: [id], onDelete: Cascade)
+}
+
+enum ExperienceLevel {
+  junior
+  mid_level
+  senior
 }

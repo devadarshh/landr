@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
             clerkData.last_name ?? ""
           }`.trim(),
           imageUrl: clerkData.image_url,
-          updatedAt: new Date(clerkData.updated_at),
         },
         create: {
           id: clerkData.id,
@@ -31,8 +30,6 @@ export async function POST(request: NextRequest) {
             clerkData.last_name ?? ""
           }`.trim(),
           imageUrl: clerkData.image_url,
-          createdAt: new Date(clerkData.created_at),
-          updatedAt: new Date(clerkData.updated_at),
         },
       });
     } else if (event.type == "user.deleted") {

@@ -29,7 +29,8 @@ export async function createJobInfo(values: JobInfoFormData) {
     return { error: true, message: "Failed to create job info" };
   }
 
-  redirect(`/job-info/${jobInfo.id}`);
+  // Correct path inside the /app namespace
+  redirect(`/app/job-infos/${jobInfo.id}`);
 }
 
 export async function updateJobInfo(id: string, values: JobInfoFormData) {

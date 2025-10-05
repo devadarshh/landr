@@ -40,23 +40,21 @@ const options = [
   },
 ];
 
+export const dynamic = "force-dynamic"; // ensure fresh data after creation
+
 export default async function JobInfoPage({
   params,
 }: {
-  params: Promise<{ jobInfoId: string }>;
+  params: { jobInfoId: string };
 }) {
-  const { jobInfoId } = await params;
+  const { jobInfoId } = params;
 
-  const jobInfo = getCurrentUser().then(
-    async ({ userId, redirectToSignIn }) => {
-      if (userId == null) return redirectToSignIn();
-
-      const jobInfo = await getJobInfo(jobInfoId, userId);
-      if (jobInfo == null) return notFound();
-
-      return jobInfo;
-    }
-  );
+  const jobInfo = getCurrentUser().then(async ({ userId }) => {
+    if (userId == null) return notFound();
+    const data = await getJobInfo(jobInfoId, userId);
+    if (data == null) return notFound();
+    return data;
+  });
 
   return (
     <div className="container my-4 space-y-4">
