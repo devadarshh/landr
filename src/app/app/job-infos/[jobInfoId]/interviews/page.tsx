@@ -9,8 +9,8 @@ import {
 import { db } from "@/drizzle/db";
 import { InterviewTable } from "@/drizzle/schema";
 import { getInterviewJobInfoTag } from "@/features/interviews/dbCache";
-import { JobInfoBackLink } from "@/features/jobInfos/ui";
-import { getJobInfoIdTag } from "@/features/jobInfos/cache";
+import { JobInfoBackLink } from "@/features/jobInfos/components/JobInfoBackLink";
+import { getJobInfoIdTag } from "@/features/jobInfos/dbCache";
 import { formatDateTime } from "@/lib/formatters";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { and, desc, eq, isNotNull } from "drizzle-orm";

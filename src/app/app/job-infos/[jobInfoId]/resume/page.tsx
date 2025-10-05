@@ -1,4 +1,4 @@
-import { JobInfoBackLink } from "@/features/jobInfos/ui";
+import { JobInfoBackLink } from "@/features/jobInfos/components/JobInfoBackLink";
 import { canRunResumeAnalysis } from "@/features/resumeAnalyses/permissions";
 import { Loader2Icon } from "lucide-react";
 import { redirect } from "next/navigation";
