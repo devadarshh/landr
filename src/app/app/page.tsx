@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/card";
 import { db } from "@/drizzle/db";
 import { JobInfoTable } from "@/drizzle/schema";
-import { JobInfoForm, getJobInfoUserTag } from "@/features/jobInfos";
+import { JobInfoForm } from "@/features/jobInfos/ui";
+import { getJobInfoUserTag } from "@/features/jobInfos/cache";
 import { formatExperienceLevel } from "@/features/jobInfos/lib/formatters";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { desc, eq } from "drizzle-orm";

@@ -4,7 +4,7 @@ import {
   questionDifficulties,
   QuestionTable,
 } from "@/drizzle/schema";
-import { getJobInfoIdTag } from "@/features/jobInfos";
+import { getJobInfoIdTag } from "@/features/jobInfos/cache";
 import { insertQuestion } from "@/features/questions/db";
 import { getQuestionJobInfoTag } from "@/features/questions/dbCache";
 import { canCreateQuestion } from "@/features/questions/permissions";

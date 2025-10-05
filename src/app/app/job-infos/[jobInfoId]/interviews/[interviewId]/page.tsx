@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import { InterviewTable } from "@/drizzle/schema";
 import { getInterviewIdTag } from "@/features/interviews/dbCache";
-import { getJobInfoIdTag } from "@/features/jobInfos";
+import { getJobInfoIdTag } from "@/features/jobInfos/cache";
 import { formatDateTime } from "@/lib/formatters";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { eq } from "drizzle-orm";

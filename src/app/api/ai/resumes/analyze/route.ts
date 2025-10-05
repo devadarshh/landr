@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { JobInfoTable } from "@/drizzle/schema";
-import { getJobInfoIdTag } from "@/features/jobInfos";
+import { getJobInfoIdTag } from "@/features/jobInfos/cache";
 import { canRunResumeAnalysis } from "@/features/resumeAnalyses/permissions";
 import { PLAN_LIMIT_MESSAGE } from "@/lib/errorToast";
 import { analyzeResumeForJob } from "@/services/ai/resumes/ai";
