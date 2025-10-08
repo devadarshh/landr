@@ -88,10 +88,6 @@ npm run dev
 
 ![Job Interview Page](assets/screenshots/interview_page.png)
 
-### Technical Interview Question
-
-![Job Interview Page](assets/screenshots/question.png)
-
 ### Resume Analysis Page
 
 ![Job Interview Page](assets/screenshots/resume-analysis.png)

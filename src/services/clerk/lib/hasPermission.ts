@@ -15,7 +15,7 @@ export async function hasPermission(permission: Permission) {
   try {
     const { user } = await getCurrentUser({ allData: true });
     console.log("Checking permission:", permission, "for user:", user?.email);
-    
+
     if (user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
       console.log("User is admin, granting permission:", permission);
       return true;
