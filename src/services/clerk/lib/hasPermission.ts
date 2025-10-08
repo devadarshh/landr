@@ -14,7 +14,10 @@ export async function hasPermission(permission: Permission) {
   // Check if user is admin first - admins have all permissions
   try {
     const { user } = await getCurrentUser({ allData: true });
+    console.log("Checking permission:", permission, "for user:", user?.email);
+    
     if (user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+      console.log("User is admin, granting permission:", permission);
       return true;
     }
   } catch (error) {
@@ -22,5 +25,7 @@ export async function hasPermission(permission: Permission) {
   }
 
   const { has } = await auth();
-  return has({ feature: permission });
+  const result = has({ feature: permission });
+  console.log("Clerk permission check result for", permission, ":", result);
+  return result;
 }

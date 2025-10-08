@@ -31,7 +31,7 @@ Landr is a **full-stack AI-powered job preparation platform** designed to help c
 ### **Server (Backend)**
 
 - ⚡ **Next.js** – Lightweight backend framework
-- 🗄 **PostgreSQL + Prisma ORM** – Relational database with schema management
+- 🗄 **PostgreSQL + Drizzle ORM** – Relational database with schema management
 - 🛡 **Arcjet** – Security & request protection
 - 🔐 **Clerk** – Authentication, authorization, and session management
 - 🧠 **Gemini API** – Role-specific interview question generation
@@ -83,7 +83,6 @@ npm run dev
 ### Job Dashboard
 
 ![Job Dashboard](assets/screenshots/dashboard.png)
-
 
 ### Job Interview Page
 
