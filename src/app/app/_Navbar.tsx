@@ -27,7 +27,7 @@ const navLinks = [
   { name: "Resume", href: "resume", Icon: FileSlidersIcon },
 ]
 
-export function Navbar({ user }: { user: { name: string; imageUrl: string } }) {
+export function Navbar({ user }: { user: { name: string; imageUrl: string | null } }) {
   const { openUserProfile } = useClerk()
   const { jobInfoId } = useParams()
   const pathName = usePathname()

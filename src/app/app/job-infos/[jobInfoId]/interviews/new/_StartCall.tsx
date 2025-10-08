@@ -24,7 +24,7 @@ export function StartCall({
   >
   user: {
     name: string
-    imageUrl: string
+    imageUrl: string | null
   }
 }) {
   const { connect, readyState, chatMetadata, callDurationTimestamp } =
@@ -121,7 +121,7 @@ export function StartCall({
   )
 }
 
-function Messages({ user }: { user: { name: string; imageUrl: string } }) {
+function Messages({ user }: { user: { name: string; imageUrl: string | null } }) {
   const { messages, fft } = useVoice()
 
   const condensedMessages = useMemo(() => {
