@@ -84,6 +84,10 @@ npm run dev
 
 ![Job Dashboard](assets/screenshots/dashboard.png)
 
+### Technical Question
+
+![Job Dashboard](assets/screenshots/questions.png)
+
 ### Job Interview Page
 
 ![Job Interview Page](assets/screenshots/interview_page.png)
