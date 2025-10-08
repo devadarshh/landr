@@ -4,12 +4,6 @@ import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { hasPermission } from "@/services/clerk/lib/hasPermission";
 import { count, eq } from "drizzle-orm";
 
-import { db } from "@/drizzle/db";
-import { JobInfoTable, QuestionTable } from "@/drizzle/schema";
-import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
-import { hasPermission } from "@/services/clerk/lib/hasPermission";
-import { count, eq } from "drizzle-orm";
-
 export async function canCreateQuestion() {
   const { user } = await getCurrentUser({ allData: true });
   console.log("Checking question permissions for user:", user?.email);
