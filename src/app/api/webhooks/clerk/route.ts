@@ -13,22 +13,35 @@ export async function POST(request: NextRequest) {
       case "user.updated":
         const clerkData = event.data;
         console.log("Processing user event for ID:", clerkData.id);
+        console.log("Full event data:", JSON.stringify(clerkData, null, 2));
 
-        const email = clerkData.email_addresses.find(
+        // Validate required fields
+        if (!clerkData.id) {
+          console.error("No user ID found in webhook data");
+          return new Response("No user ID found", { status: 400 });
+        }
+
+        const email = clerkData.email_addresses?.find(
           (e) => e.id === clerkData.primary_email_address_id
         )?.email_address;
-        if (email == null) {
+
+        if (!email) {
           console.error("No primary email found for user:", clerkData.id);
+          console.error(
+            "Available email addresses:",
+            clerkData.email_addresses
+          );
           return new Response("No primary email found", { status: 400 });
         }
 
         const userData = {
           id: clerkData.id,
           email,
-          name: `${clerkData.first_name || ""} ${
-            clerkData.last_name || ""
-          }`.trim(),
-          imageUrl: clerkData.image_url,
+          name:
+            `${clerkData.first_name || ""} ${
+              clerkData.last_name || ""
+            }`.trim() || "User",
+          imageUrl: clerkData.image_url || "",
           createdAt: new Date(clerkData.created_at),
           updatedAt: new Date(clerkData.updated_at),
         };
