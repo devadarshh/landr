@@ -30,7 +30,7 @@ Landr is a **full-stack AI-powered job preparation platform** designed to help c
 
 ### **Server (Backend)**
 
-- ⚡ **Express.js** – Lightweight Node.js backend framework
+- ⚡ **Next.js** – Lightweight backend framework
 - 🗄 **PostgreSQL + Prisma ORM** – Relational database with schema management
 - 🛡 **Arcjet** – Security & request protection
 - 🔐 **Clerk** – Authentication, authorization, and session management
@@ -39,41 +39,29 @@ Landr is a **full-stack AI-powered job preparation platform** designed to help c
 
 ---
 
-## Environment Variables
-
-To run this project, you will need to set the following environment variables in your `.env` file:
-
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-- `CLERK_SECRET_KEY`
-- `NEXT_PUBLIC_CLERK_SIGN_IN_URL`
-- `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL`
-- `NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL`
-- `CLERK_WEBHOOK_SIGNING_SECRET`
-- `ARCJET_KEY`
-- `DATABASE_URL`
-- `HUME_API_KEY`
-- `HUME_SECRET_KEY`
-- `NEXT_PUBLIC_HUME_CONFIG_ID`
-- `GEMINI_API_KEY`
-
 ## 🚀 Installation & Running Locally
 
 Follow these steps to set up and run **Landr**:
 
 ```bash
-# 1. Clone the repository
+# Clone the repository
+
 git clone https://github.com/devadarshh/landr.git
 
-# 2. Navigate into the project directory
+# Navigate into the project directory
+
 cd landr
 
-# 3. Install dependencies
+# Install dependencies
+
 npm install
 
-# 4. Set up environment variables
-# Create a .env.local file in the root directory and add the values listed above.
+# Duplicate .env.example and rename it to .env
 
-# 5. Start the development server
+cp .env.example .env
+
+#  Start the development server
+
 npm run dev
 
 ```
@@ -86,31 +74,32 @@ npm run dev
 
 ### Landing Page II
 
-![Landing Page II](assets/screenshots/landing_page2.png)
+![Landing Page II](assets/screenshots/landing_page_2.png)
 
-### Sign In Page
-
-![Sign In Page](assets/screenshots/sign_in.png)
-
-### Job Dashboard
+### Job Description
 
 ![Job Dashboard](assets/screenshots/job_description.png)
 
-### Job Info Page
+### Job Dashboard
 
-![Job Info Page](assets/screenshots/jobbb.png)
+![Job Dashboard](assets/screenshots/dashboard.png)
 
-### Edit Job Info Page
-
-![Edit Job Info Page](assets/screenshots/edit_job.png)
 
 ### Job Interview Page
 
-![Job Interview Page](assets/screenshots/interview.png)
+![Job Interview Page](assets/screenshots/interview_page.png)
 
-### Dark Mode Page
+### Technical Interview Question
 
-![Dark Mode Page](assets/screenshots/dark_mode.png)
+![Job Interview Page](assets/screenshots/question.png)
+
+### Resume Analysis Page
+
+![Job Interview Page](assets/screenshots/resume-analysis.png)
+
+### Light Mode Page
+
+![Light Mode Page](assets/screenshots/Light_mode.png)
 
 ## 📄 License
 
