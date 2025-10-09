@@ -3,7 +3,7 @@
 Landr is a **full-stack AI-powered job preparation platform** designed to help candidates practice interviews, refine resumes, and receive real-time feedback. By combining **LLMs, emotion AI, and secure infrastructure**, Landr empowers users to become interview-ready with personalized insights.
 
 **🌐 Live Demo:** [Access Landr](www.landr.xyz)  
-**🎬 Project Walkthrough:** [Watch on YouTube](https://youtube.com/your-video-link)
+**🎬 Project Walkthrough:** [Watch on YouTube](https://youtu.be/Gb1TpmxnijY?si=AJVjR85zt8hG_0sb)
 
 ---
 
