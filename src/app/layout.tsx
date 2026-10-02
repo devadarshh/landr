@@ -11,6 +11,7 @@ const outfitSans = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://landr.adarshsingh.xyz"),
   title: "Landr – AI Job Prep Platform",
   description:
     "Landr is an AI-powered platform for interview prep, resume feedback, and real-time emotion analysis.",

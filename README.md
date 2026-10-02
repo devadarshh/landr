@@ -2,7 +2,7 @@
 
 Landr is a **full-stack AI-powered job preparation platform** designed to help candidates practice interviews, refine resumes, and receive real-time feedback. By combining **LLMs, emotion AI, and secure infrastructure**, Landr empowers users to become interview-ready with personalized insights.
 
-**🌐 Live Demo:** [Access Landr](https://www.landr.xyz)  
+**🌐 Live Demo:** [Access Landr](https://landr.adarshsingh.xyz)  
 **🎬 Project Walkthrough:** [Watch on YouTube](https://youtu.be/Gb1TpmxnijY?si=AJVjR85zt8hG_0sb)
 
 ---
@@ -56,15 +56,32 @@ cd landr
 
 npm install
 
-# Duplicate .env.example and rename it to .env
+# Create a .env file and configure the required environment variables
 
-cp .env.example .env
+touch .env
 
 #  Start the development server
 
 npm run dev
 
 ```
+
+## 🌐 Production Domain & Authentication
+
+The production site is hosted at [landr.adarshsingh.xyz](https://landr.adarshsingh.xyz). For Clerk authentication on this domain:
+
+- Use the production Clerk publishable and secret keys in the deployment environment.
+- Set the Clerk application domain and allowed redirect origins to `https://landr.adarshsingh.xyz` in the Clerk Dashboard.
+- Set the following Clerk environment variables in the deployment environment:
+
+```env
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/app
+NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/app
+```
+
+The app provides `/sign-in` and `/sign-up` routes. Clerk redirects users to `/app` after they authenticate.
 
 ## 📸 Screenshots
 
