@@ -1,7 +1,7 @@
 "use server"
 
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import { getJobInfoIdTag } from "../jobInfos/dbCache"
 import { db } from "@/drizzle/db"
 import { and, eq } from "drizzle-orm"

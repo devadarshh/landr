@@ -19,6 +19,7 @@ import { SignOutButton, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 import { UserAvatar } from "@/features/users/components/UserAvatar";
 import { useParams, usePathname } from "next/navigation";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
@@ -33,8 +34,6 @@ export function Navbar({
   user: { name: string; imageUrl: string | null };
 }) {
   const { openUserProfile } = useClerk();
-  const { jobInfoId } = useParams();
-  const pathName = usePathname();
 
   return (
     <nav className="h-header border-b">
@@ -45,24 +44,9 @@ export function Navbar({
         </Link>
 
         <div className="flex items-center gap-4">
-          {typeof jobInfoId === "string" &&
-            navLinks.map(({ name, href, Icon }) => {
-              const hrefPath = `/app/job-infos/${jobInfoId}/${href}`;
-
-              return (
-                <Button
-                  variant={pathName === hrefPath ? "secondary" : "ghost"}
-                  key={name}
-                  asChild
-                  className="cursor-pointer max-sm:hidden"
-                >
-                  <Link href={hrefPath}>
-                    <Icon />
-                    {name}
-                  </Link>
-                </Button>
-              );
-            })}
+          <Suspense fallback={null}>
+            <JobNavigationLinks />
+          </Suspense>
 
           <ThemeToggle />
 
@@ -86,5 +70,31 @@ export function Navbar({
         </div>
       </div>
     </nav>
+  );
+}
+
+function JobNavigationLinks() {
+  const { jobInfoId } = useParams();
+  const pathName = usePathname();
+
+  return (
+    typeof jobInfoId === "string" &&
+    navLinks.map(({ name, href, Icon }) => {
+      const hrefPath = `/app/job-infos/${jobInfoId}/${href}`;
+
+      return (
+        <Button
+          variant={pathName === hrefPath ? "secondary" : "ghost"}
+          key={name}
+          asChild
+          className="cursor-pointer max-sm:hidden"
+        >
+          <Link href={hrefPath}>
+            <Icon />
+            {name}
+          </Link>
+        </Button>
+      );
+    })
   );
 }

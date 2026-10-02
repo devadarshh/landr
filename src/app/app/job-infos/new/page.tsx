@@ -2,6 +2,8 @@ import { BackLink } from "@/components/BackLink";
 import { Card, CardContent } from "@/components/ui/card";
 import { JobInfoForm } from "@/features/jobInfos/components/JobInfoForm";
 
+export const instant = false
+
 export default function JobInfoNewPage() {
   return (
     <div className="container my-4 max-w-5xl space-y-4">

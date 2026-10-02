@@ -8,7 +8,7 @@ import { redirect } from "next/navigation"
 import { db } from "@/drizzle/db"
 import { and, eq } from "drizzle-orm"
 import { JobInfoTable } from "@/drizzle/schema"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import { getJobInfoIdTag } from "./dbCache"
 
 export async function createJobInfo(unsafeData: z.infer<typeof jobInfoSchema>) {

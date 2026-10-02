@@ -20,7 +20,7 @@ export function revalidateQuestionCache({
   id: string
   jobInfoId: string
 }) {
-  revalidateTag(getQuestionGlobalTag())
-  revalidateTag(getQuestionJobInfoTag(jobInfoId))
-  revalidateTag(getQuestionIdTag(id))
+  revalidateTag(getQuestionGlobalTag(), { expire: 0 })
+  revalidateTag(getQuestionJobInfoTag(jobInfoId), { expire: 0 })
+  revalidateTag(getQuestionIdTag(id), { expire: 0 })
 }

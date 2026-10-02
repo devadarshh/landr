@@ -20,7 +20,7 @@ export function revalidateJobInfoCache({
   id: string
   userId: string
 }) {
-  revalidateTag(getJobInfoGlobalTag())
-  revalidateTag(getJobInfoUserTag(userId))
-  revalidateTag(getJobInfoIdTag(id))
+  revalidateTag(getJobInfoGlobalTag(), { expire: 0 })
+  revalidateTag(getJobInfoUserTag(userId), { expire: 0 })
+  revalidateTag(getJobInfoIdTag(id), { expire: 0 })
 }

@@ -3,6 +3,8 @@ import { BackLink } from "@/components/BackLink"
 import { AlertTriangle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
+export const instant = false
+
 export default function UpgradePage() {
   return (
     <div className="container py-4 max-w-6xl">

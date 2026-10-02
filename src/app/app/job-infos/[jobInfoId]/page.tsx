@@ -16,9 +16,11 @@ import { formatExperienceLevel } from "@/features/jobInfos/lib/formatters";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { and, eq } from "drizzle-orm";
 import { ArrowRightIcon } from "lucide-react";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { cacheTag } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+export const instant = false;
 
 const options = [
   {

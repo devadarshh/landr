@@ -9,7 +9,7 @@ import { getJobInfoIdTag } from "@/features/jobInfos/dbCache";
 import { formatDateTime } from "@/lib/formatters";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { eq } from "drizzle-orm";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { cacheTag } from "next/cache";
 import { notFound } from "next/navigation";
 import {
   Dialog,
@@ -25,6 +25,8 @@ import { condenseChatMessages } from "@/services/hume/lib/condenseChatMessages";
 import { fetchChatMessages } from "@/services/hume/lib/api";
 import { ActionButton } from "@/components/ui/action-button";
 import { generateInterviewFeedback } from "@/features/interviews/actions";
+
+export const instant = false;
 
 export default async function InterviewPage({
   params,

@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@/services/clerk/components/ClerkProvider";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
+import { Suspense } from "react";
 
 const outfitSans = Outfit({
   variable: "--font-outfit-sans",
@@ -23,9 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${outfitSans.variable} antialiased font-sans`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${outfitSans.variable} antialiased font-sans`}>
+        <Suspense fallback={<div className="min-h-screen bg-background" />}>
+          <ClerkProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -35,8 +37,9 @@ export default function RootLayout({
             {children}
             <Toaster />
           </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+          </ClerkProvider>
+        </Suspense>
+      </body>
+    </html>
   );
 }

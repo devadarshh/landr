@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ResumePageClient } from "./_client";
 
+export const instant = false;
+
 export default async function ResumePage({
   params,
 }: {

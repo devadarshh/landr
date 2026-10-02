@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { cacheTag } from "next/cache";
 import { getUserIdTag, revalidateUserCache } from "./dbCache";
 import { db } from "@/drizzle/db";
 import { UserTable } from "@/drizzle/schema";

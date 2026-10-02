@@ -11,8 +11,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
+
+const subscribe = () => () => {}
+const getClientSnapshot = () => true
+const getServerSnapshot = () => false
 
 const themes = [
   {
@@ -33,12 +36,12 @@ const themes = [
 ] as const
 
 export function ThemeToggle() {
-  const [mounted, setMounted] = useState(false)
+  const mounted = React.useSyncExternalStore(
+    subscribe,
+    getClientSnapshot,
+    getServerSnapshot
+  )
   const { setTheme, theme, resolvedTheme } = useTheme()
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   if (!mounted) return null
 

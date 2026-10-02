@@ -13,7 +13,7 @@ import { generateAiQuestion } from "@/services/ai/questions";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { createDataStreamResponse } from "ai";
 import { and, asc, eq } from "drizzle-orm";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { cacheTag } from "next/cache";
 import z from "zod";
 
 const schema = z.object({

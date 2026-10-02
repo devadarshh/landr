@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    useCache: true,
-  },
+  cacheComponents: true,
   webpack: (config, { isServer }) => {
     // If client-side, don't polyfill Node.js modules
     if (!isServer) {

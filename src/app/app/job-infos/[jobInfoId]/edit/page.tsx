@@ -7,9 +7,11 @@ import { getJobInfoIdTag } from "@/features/jobInfos/dbCache";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { and, eq } from "drizzle-orm";
 import { Loader2 } from "lucide-react";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { cacheTag } from "next/cache";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+
+export const instant = false;
 
 export default async function JobInfoNewPage({
   params,

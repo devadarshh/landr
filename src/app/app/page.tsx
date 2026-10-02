@@ -15,9 +15,11 @@ import { formatExperienceLevel } from "@/features/jobInfos/lib/formatters";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { desc, eq } from "drizzle-orm";
 import { ArrowRightIcon, Loader2Icon, PlusIcon } from "lucide-react";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { cacheTag } from "next/cache";
 import Link from "next/link";
 import { Suspense } from "react";
+
+export const instant = false;
 
 export default function AppPage() {
   return (
