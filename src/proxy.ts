@@ -25,7 +25,7 @@ const aj = arcjet({
   ],
 })
 
-export default clerkMiddleware(async (auth, req) => {
+export const proxy = clerkMiddleware(async (auth, req) => {
   const decision = await aj.protect(req)
 
   if (decision.isDenied()) {
